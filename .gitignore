@@ -1,1 +1,2 @@
-.config
+*.o
+backup_manager
