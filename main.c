@@ -7,23 +7,39 @@
 #include "luks.h"
 #include "disk_manage.h"
 
-int main(){
-    const char *DEV = "/dev/sdb1";
-    const char *MNT_POINT = "/media/luks_crypt";
-    const char *KEY = "/root/usb.key";
+int main(int argc, char **argv){
 
-    if(open_luks_vol(DEV, KEY) == 1){
-        perror("Warning: failed to open luks volume\n");
+    const char *LUKS_VOL;
+    const char *KEY_FILE;
+    const char *MNT_POINT;
+    const char *FILES;
+
+    // Accept user arguments for 
+    // -> luks vol location | key file | files to backup
+    int opt;
+    while (true){
+        opt = getopt(argc, argv, "klf");
+        if ( argc > 1 && opt == -1){
+            break;
+        }
+
+        switch(opt){
+            case 'k':
+                KEY_FILE = argv[optind];
+                break;
+            case 'f':
+                FILES = argv[optind];
+                break;
+            case 'l':
+                LUKS_VOL = argv[optind];
+                break;
+            default: /* '?' */
+                printf("Usage: [-l LUKS_VOLUME] [-k KEYFILE] [-f FILE_TO_BACKUP] \n" );
+                exit(EXIT_FAILURE);
+        }
     }
-    if(mount_device(DEV, MNT_POINT) == 1){
-        perror("Warning: failed to mount mapped device\n");
-    }
-    sleep(10);
-    if(umount_device(MNT_POINT) == 1){
-        perror("Warning: failed to umount mapped device\n");
-    }
-    if (close_luks_vol("tmp_luks_vol") == 1) {
-        perror("Warning: failed to close luks volume\n");
-    }
+
+
+    
     return 0;
 }
