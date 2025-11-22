@@ -16,6 +16,7 @@ int main(int argc, char **argv){
 
     // Accept user arguments for 
     // -> luks vol location | key file | files to backup
+    // Need to accept long args and multiple files later
     int opt;
     while (true){
         opt = getopt(argc, argv, "klf");
